@@ -125,17 +125,15 @@
             { id: 20, url: './images/20_ai.png', answer: 'AI', title: 'Abstract Organic Architecture', artist: 'Midjourney', source: 'Wikimedia Commons', hint: 'Biomorphic flowing geometry that defies standard structural engineering.' }
         ];
 
-        // Mock Leaderboard Database with localStorage persistence
-        let leaderboardDB = [
-            { name: 'AI_Master', score: 1950, time: 24.1 },
-            { name: 'ArtCritic', score: 1700, time: 28.5 },
-            { name: 'MuseumCurator', score: 1500, time: 35.2 }
-        ];
+        // Clean Leaderboard Database (stores real participant scores only)
+        let leaderboardDB = [];
 
         try {
             const savedLeaderboard = localStorage.getItem('imd_ai_leaderboard');
             if (savedLeaderboard) {
-                leaderboardDB = JSON.parse(savedLeaderboard);
+                // Filter out any initial dummy placeholder names
+                const parsed = JSON.parse(savedLeaderboard);
+                leaderboardDB = parsed.filter(e => !['AI_Master', 'ArtCritic', 'MuseumCurator'].includes(e.name));
             }
         } catch (e) {
             console.warn('Could not load leaderboard from localStorage', e);
@@ -297,7 +295,9 @@
             // Sort leaderboard
             leaderboardDB.sort((a, b) => b.score - a.score);
 
-            let leaderboardHTML = leaderboardDB.slice(0, 5).map((entry, index) => `
+            let leaderboardHTML = leaderboardDB.length === 0 
+                ? '<div class="p-4 text-center text-gray-400 text-xs italic">No previous scores on this device yet.</div>'
+                : leaderboardDB.slice(0, 5).map((entry, index) => `
             <div class="flex justify-between items-center p-2.5 ${entry.name === state.nickname ? 'bg-blue-50 border border-blue-200 font-bold' : 'border-b border-gray-100'} rounded mb-1 text-xs">
                 <div class="flex items-center gap-2.5">
                     <span class="text-gray-400 font-mono w-4">${index + 1}.</span>
@@ -351,8 +351,8 @@
                 </div>
 
                 <div class="flex justify-between items-center mb-1 px-1">
-                    <h3 class="font-bold text-gray-800 uppercase tracking-wide text-xs">Top Rankings</h3>
-                    <span class="text-[10px] text-gray-400">All-Time</span>
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wide text-xs">Recent Scores</h3>
+                    <button onclick="clearLocalHistory()" class="text-[10px] text-gray-400 hover:text-red-500 underline">Reset device scores</button>
                 </div>
                 <div class="bg-white rounded-lg border border-gray-200 mb-3 max-h-32 overflow-y-auto">
                     ${leaderboardHTML}
@@ -368,6 +368,14 @@
                 </div>
             </div>
         `;
+        }
+
+        function clearLocalHistory() {
+            if (confirm("Reset local leaderboard history on this device?")) {
+                localStorage.removeItem('imd_ai_leaderboard');
+                leaderboardDB = [];
+                renderLeaderboard();
+            }
         }
 
         // --- Logic ---
