@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMD: Real vs AI Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .imd-blue {
+            background-color: #003366;
+        }
+
+        .imd-text-blue {
+            color: #003366;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 480px;
+            background-color: white;
+            min-height: 100vh;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (min-width: 480px) {
+            #app-container {
+                min-height: 800px;
+                border-radius: 12px;
+                margin: 20px 0;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .img-container {
+            width: 100%;
+            height: 350px;
+            background-color: #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app-container" class="flex flex-col">
+        <!-- Header -->
+        <div class="imd-blue text-white p-4 text-center font-bold text-xl tracking-wider shadow-md z-10">
+            IMD AI CHALLENGE
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="screen-content" class="flex-grow p-6 flex flex-col fade-in">
+            <!-- Content injected by JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+        const APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+        // Dataset for the game (Using Hyperrealism vs AI examples)
+        const dataset = [
+            { id: 1, url: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800', answer: 'Real', hint: 'Thick impasto texture. Look at the brush strokes.' },
+            { id: 2, url: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800', answer: 'AI', hint: 'The background blurs unnaturally into the subject.' },
+            { id: 3, url: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800', answer: 'Real', hint: 'Hyperrealistic portrait. Took 400 hours to paint.' },
+            { id: 4, url: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?w=800', answer: 'AI', hint: 'Impossible geometry in the lower left corner.' },
+            { id: 5, url: 'https://images.unsplash.com/photo-1580136608260-4eb11f4b24fe?w=800', answer: 'Real', hint: 'Incredible detail on the reflections.' },
+            { id: 6, url: 'https://images.unsplash.com/photo-1549490349-8643362247b5?w=800', answer: 'AI', hint: 'The lighting source contradicts the shadows.' },
+            { id: 7, url: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=800', answer: 'Real', hint: 'Classic surrealism. Hand-painted acrylic.' },
+            { id: 8, url: 'https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800', answer: 'AI', hint: 'Count the fingers holding the cup.' },
+            { id: 9, url: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=800', answer: 'Real', hint: 'Macro photography of mixed oil paints.' },
+            { id: 10, url: 'https://images.unsplash.com/photo-1515405295579-ba7b45403062?w=800', answer: 'AI', hint: 'Symmetry is mathematically too perfect.' },
+            { id: 11, url: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=800', answer: 'Real', hint: 'Notice the subtle imperfections in the canvas weave.' },
+            { id: 12, url: 'https://images.unsplash.com/photo-1578301978693-85fa9c026109?w=800', answer: 'AI', hint: 'The text in the background is complete gibberish.' },
+            { id: 13, url: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800', answer: 'Real', hint: 'Contemporary hyperrealistic still life.' },
+            { id: 14, url: 'https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=800', answer: 'AI', hint: 'The earring blends directly into the jawline.' },
+            { id: 15, url: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=800', answer: 'Real', hint: 'Oil painting with masterful water droplet rendering.' },
+            { id: 16, url: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800', answer: 'AI', hint: 'The brushstrokes do not follow the form of the objects.' },
+            { id: 17, url: 'https://images.unsplash.com/photo-1582201942988-13e60e4556ce?w=800', answer: 'Real', hint: 'Extremely detailed urban realism.' },
+            { id: 18, url: 'https://images.unsplash.com/photo-1565373677328-9366df6b1897?w=800', answer: 'AI', hint: 'Look closely at the pupils; they are misshapen.' },
+            { id: 19, url: 'https://images.unsplash.com/photo-1501472312651-726afe119ff1?w=800', answer: 'Real', hint: 'Physical paint splatters create natural depth.' },
+            { id: 20, url: 'https://images.unsplash.com/photo-1614729939124-03290b5509ce?w=800', answer: 'AI', hint: 'Hyper-detailed foreground, but the ears are blurry.' }
+        ];
+
+        // Mock Leaderboard Database (Provides immediate local feedback before sheet sync)
+        let leaderboardDB = [
+            { name: 'AI_Master', score: 450, time: 25.1 },
+            { name: 'ArtCritic', score: 420, time: 28.5 }
+        ];
+
+        // Game State
+        let state = {
+            screen: 'ONBOARDING', // ONBOARDING, PLAYING, SYNCING, LEADERBOARD
+            nickname: '',
+            score: 0,
+            currentIndex: 0,
+            startTime: 0,
+            timerInterval: null,
+            timeElapsed: 0
+        };
+
+        const contentDiv = document.getElementById('screen-content');
+
+        // --- Screen Renderers ---
+
+        function renderOnboarding() {
+            contentDiv.innerHTML = `
+            <div class="flex-grow flex flex-col justify-center text-center fade-in">
+                <h1 class="text-3xl font-bold imd-text-blue mb-2">Real or AI?</h1>
+                <p class="text-gray-600 mb-8">Can you spot the difference between human mastery and algorithmic perfection?</p>
+                
+                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
+                    <label class="block text-left text-sm font-semibold text-gray-700 mb-2">Enter Nickname</label>
+                    <input type="text" id="nickname-input" placeholder="e.g. CyberSamurai" maxlength="15" 
+                           class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-900 text-lg">
+                </div>
+
+                <button onclick="startGame()" class="imd-blue text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:bg-blue-800 transition transform hover:-translate-y-1 text-lg w-full">
+                    START THE CLOCK
+                </button>
+            </div>
+        `;
+        }
+
+        function renderPlaying() {
+            const item = dataset[state.currentIndex];
+
+            contentDiv.innerHTML = `
+            <div class="fade-in h-full flex flex-col">
+                <!-- Status Bar -->
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-sm font-semibold text-gray-500">Player: <span class="imd-text-blue">${state.nickname}</span></div>
+                    <div class="text-sm font-bold bg-gray-200 px-3 py-1 rounded-full"><span id="timer-display">0.0</span>s</div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+                    <div class="imd-blue h-2 rounded-full transition-all duration-300" style="width: ${((state.currentIndex) / dataset.length) * 100}%"></div>
+                </div>
+
+                <!-- Image -->
+                <div class="img-container shadow-md">
+                    <img src="${item.url}" alt="Artwork ${state.currentIndex + 1}">
+                </div>
+                
+                <p class="text-center text-xs text-gray-400 mb-6 uppercase tracking-widest">Image ${state.currentIndex + 1} of ${dataset.length}</p>
+
+                <!-- Actions -->
+                <div class="flex gap-4 mt-auto mb-4">
+                    <button onclick="makeGuess('Real')" class="flex-1 bg-white border-2 border-[#003366] imd-text-blue font-bold py-4 rounded-lg hover:bg-gray-50 transition text-lg shadow-sm">
+                        🧑‍🎨 REAL
+                    </button>
+                    <button onclick="makeGuess('AI')" class="flex-1 imd-blue text-white font-bold py-4 rounded-lg hover:bg-blue-800 transition text-lg shadow-sm">
+                        🤖 AI
+                    </button>
+                </div>
+            </div>
+        `;
+        }
+
+        function renderSyncing() {
+            contentDiv.innerHTML = `
+            <div class="flex-grow flex flex-col justify-center items-center text-center fade-in">
+                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#003366] mb-6"></div>
+                <h2 class="text-xl font-bold imd-text-blue">Calculating Score...</h2>
+                <p class="text-gray-500 mt-2">Syncing to Google Sheets leaderboard.</p>
+            </div>
+        `;
+        }
+
+        function renderLeaderboard() {
+            // Sort leaderboard
+            leaderboardDB.sort((a, b) => b.score - a.score);
+
+            let leaderboardHTML = leaderboardDB.slice(0, 5).map((entry, index) => `
+            <div class="flex justify-between items-center p-3 ${entry.name === state.nickname ? 'bg-blue-50 border border-blue-200 font-bold' : 'border-b border-gray-100'} rounded mb-1">
+                <div class="flex items-center gap-3">
+                    <span class="text-gray-400 font-mono w-4">${index + 1}.</span>
+                    <span class="${entry.name === state.nickname ? 'imd-text-blue' : 'text-gray-700'}">${entry.name}</span>
+                </div>
+                <div class="text-right">
+                    <div class="text-gray-900">${entry.score} <span class="text-xs text-gray-500 font-normal">pts</span></div>
+                </div>
+            </div>
+        `).join('');
+
+            const timeBonus = Math.max(0, Math.floor((30 - state.timeElapsed) * 10));
+
+            contentDiv.innerHTML = `
+            <div class="fade-in flex flex-col h-full">
+                <div class="text-center mb-6">
+                    <div class="text-5xl mb-2">🏆</div>
+                    <h2 class="text-2xl font-bold imd-text-blue mb-1">Challenge Complete!</h2>
+                    <p class="text-gray-500">Time: ${state.timeElapsed} seconds</p>
+                </div>
+
+                <div class="bg-gray-900 text-white p-6 rounded-xl text-center shadow-lg mb-8 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 opacity-10">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                    </div>
+                    <div class="text-sm uppercase tracking-wider text-gray-400 font-semibold mb-1">Total Score</div>
+                    <div class="text-5xl font-bold text-white mb-2">${state.score}</div>
+                    <div class="text-xs text-green-400">Includes +${timeBonus} speed bonus!</div>
+                </div>
+
+                <h3 class="font-bold text-gray-800 uppercase tracking-wide text-sm mb-3 px-2">Live Leaderboard</h3>
+                <div class="bg-white rounded-lg border border-gray-200 mb-auto flex-grow overflow-y-auto">
+                    ${leaderboardHTML}
+                </div>
+
+                <button onclick="resetApp()" class="mt-6 w-full bg-gray-200 text-gray-800 font-bold py-4 rounded-lg hover:bg-gray-300 transition">
+                    PLAY AGAIN
+                </button>
+            </div>
+        `;
+        }
+
+        // --- Logic ---
+
+        function startGame() {
+            const input = document.getElementById('nickname-input').value.trim();
+            if (!input) {
+                // Using a simple alert for demo purposes, but in production, a custom modal is better
+                alert("Please enter a nickname!");
+                return;
+            }
+
+            state.nickname = input;
+            state.score = 0;
+            state.currentIndex = 0;
+            state.startTime = Date.now();
+            state.screen = 'PLAYING';
+
+            // Start Timer
+            state.timerInterval = setInterval(updateTimer, 100);
+
+            renderPlaying();
+        }
+
+        function updateTimer() {
+            if (state.screen !== 'PLAYING') return;
+            const now = Date.now();
+            state.timeElapsed = ((now - state.startTime) / 1000).toFixed(1);
+            const timerEl = document.getElementById('timer-display');
+            if (timerEl) {
+                timerEl.innerText = state.timeElapsed;
+            }
+        }
+
+        function makeGuess(guess) {
+            const currentItem = dataset[state.currentIndex];
+
+            // Base score for correct answer
+            if (guess === currentItem.answer) {
+                state.score += 100;
+            }
+
+            state.currentIndex++;
+
+            if (state.currentIndex >= dataset.length) {
+                endGame();
+            } else {
+                renderPlaying();
+            }
+        }
+
+        async function endGame() {
+            clearInterval(state.timerInterval);
+            state.screen = 'SYNCING';
+            renderSyncing();
+
+            // Calculate final score with speed bonus (assumes a 30 second par time)
+            const timeBonus = Math.max(0, Math.floor((30 - parseFloat(state.timeElapsed)) * 10));
+            state.score += timeBonus;
+
+            const payload = {
+                nickname: state.nickname,
+                score: state.score,
+                time: state.timeElapsed,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                // Send data to Google Sheets via Apps Script Web App
+                if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                    await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Prevents browser CORS blocks for simple one-way logging
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    // Simulate network delay if URL isn't set yet (for testing)
+                    await new Promise(resolve => setTimeout(resolve, 1200));
+                }
+            } catch (error) {
+                console.error("Error saving to Google Sheets:", error);
+            }
+
+            // Save locally so the user instantly sees their score on their screen
+            leaderboardDB.push({
+                name: state.nickname,
+                score: state.score,
+                time: state.timeElapsed
+            });
+
+            state.screen = 'LEADERBOARD';
+            renderLeaderboard();
+        }
+
+        function resetApp() {
+            state = {
+                screen: 'ONBOARDING',
+                nickname: '',
+                score: 0,
+                currentIndex: 0,
+                startTime: 0,
+                timerInterval: null,
+                timeElapsed: 0
+            };
+            renderOnboarding();
+        }
+
+        // Init
+        renderOnboarding();
+    </script>
+
+</body>
+
+</html>

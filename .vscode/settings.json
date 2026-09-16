@@ -1,0 +1,7 @@
+{
+  "git.autoRepositoryDetection": "open",
+  "git.ignoredRepositories": [
+    "C:/Users/sabri/OneDrive/Documents/GitHub/Git",
+    "C:\\Users\\sabri\\OneDrive\\Documents\\GitHub\\Git"
+  ]
+}
