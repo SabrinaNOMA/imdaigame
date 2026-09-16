@@ -173,7 +173,12 @@
             { id: 17, url: './images/17_real.jpg', answer: 'Real', title: 'The Death of Socrates', artist: 'Jacques Louis David (1787)', source: 'The Metropolitan Museum of Art', hint: 'Rigorous Neoclassical anatomy, linear perspective, and controlled drapery.' },
             { id: 18, url: './images/18_ai.png', answer: 'AI', title: 'Little Ice Bear in Snow', artist: 'Midjourney v4', source: 'Wikimedia Commons', hint: 'Sub-surface fur scatter and stylized eyes typical of diffusion rendering.' },
             { id: 19, url: './images/19_real.jpg', answer: 'Real', title: 'Blind Orion Searching for the Rising Sun', artist: 'Nicolas Poussin (1658)', source: 'The Metropolitan Museum of Art', hint: 'Atmospheric mist and layered receding classical landscape depth.' },
-            { id: 20, url: './images/20_ai.png', answer: 'AI', title: 'Abstract Organic Architecture', artist: 'Midjourney', source: 'Wikimedia Commons', hint: 'Biomorphic flowing geometry that defies standard structural engineering.' }
+            { id: 20, url: './images/20_ai.png', answer: 'AI', title: 'Abstract Organic Architecture', artist: 'Midjourney', source: 'Wikimedia Commons', hint: 'Biomorphic flowing geometry that defies standard structural engineering.' },
+            { id: 21, url: './images/21_ai.png', answer: 'AI', title: 'Golf Cart Encounter', artist: 'OpenAI / Diffusion Synthesis (2026)', source: 'AI Generated Deepfake', hint: 'Notice the unnaturally smooth, airbrushed skin texture and how the golf cart steering column melts into the background without natural mechanical seams.' },
+            { id: 22, url: './images/22_real.png', answer: 'Real', title: 'F L A M I N G O N E', artist: 'Miles Astray (2024)', source: 'Aruba Beach / 1839 Awards', hint: 'Famous 2024 photograph submitted to an AI competition to prove nature can be more surreal than generative models.' },
+            { id: 23, url: './images/23_real.png', answer: 'Real', title: 'Portrait of Mark Zuckerberg (Gold Chain Era)', artist: 'Meta / Mark Zuckerberg (2024)', source: 'Meta AI Announcement Reel', hint: 'Authentic ear cartilage and natural micro-wrinkles—viral video frame that sparked widespread "AI or Real?" debate.' },
+            { id: 24, url: './images/24_real.png', answer: 'Real', title: 'Senator Bernie Sanders with Mittens', artist: 'Brendan Smialowski (2021)', source: 'AFP / Getty Images', hint: 'Authentic photojournalistic capture—notice handcrafted wool knit patterns and folding chair hardware.' },
+            { id: 25, url: './images/25_ai.png', answer: 'AI', title: 'Katy Perry Met Gala Floral Gown', artist: 'Generative AI (2024)', source: 'Viral Social Deepfake', hint: 'Examined by millions (including her mother)—notice the unnatural moss texture and absence of real press photographers.' }
         ];
 
         // Fisher-Yates (Knuth) Shuffle - Pure non-mutating shuffle
@@ -426,8 +431,8 @@
                         <span class="text-lg font-medium text-blue-200">/ ${totalCount}</span>
                     </div>
                     
-                    <div class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full inline-block mb-3 ${state.correctCount >= 16 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : state.correctCount >= 10 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
-                        ${accuracyPercent}% Correct • ${state.correctCount >= 18 ? 'Master Tier' : state.correctCount >= 14 ? 'Advanced Tier' : 'Apprentice Tier'}
+                    <div class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full inline-block mb-3 ${accuracyPercent >= 80 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : accuracyPercent >= 50 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
+                        ${accuracyPercent}% Correct • ${accuracyPercent >= 85 ? 'Master Tier' : accuracyPercent >= 65 ? 'Advanced Tier' : 'Apprentice Tier'}
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 pt-2.5 border-t border-blue-900/60 text-xs">
