@@ -283,10 +283,12 @@
 
         function renderSyncing() {
             contentDiv.innerHTML = `
-            <div class="flex-grow flex flex-col justify-center items-center text-center fade-in">
+            <div class="flex-grow flex flex-col justify-center items-center text-center fade-in py-12">
                 <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#003366] mb-6"></div>
-                <h2 class="text-xl font-bold imd-text-blue">Calculating Score...</h2>
-                <p class="text-gray-500 mt-2">Syncing to Google Sheets leaderboard.</p>
+                <h2 class="text-2xl font-black imd-text-blue mb-2">Consulting the AI Jury... 🤖🔍</h2>
+                <p class="text-gray-600 text-sm max-w-xs leading-relaxed">
+                    Did you outsmart the neural networks or get fooled by diffusion magic? Transmitting your rank to the Hall of Fame...
+                </p>
             </div>
         `;
         }
