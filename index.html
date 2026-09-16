@@ -86,8 +86,11 @@
 
     <div id="app-container" class="flex flex-col">
         <!-- Header -->
-        <div class="imd-blue text-white p-4 text-center font-bold text-xl tracking-wider shadow-md z-10">
-            IMD AI CHALLENGE
+        <div class="imd-blue text-white p-4 font-bold text-lg tracking-wider shadow-md z-10 flex justify-between items-center px-5">
+            <span onclick="resetApp()" class="cursor-pointer">IMD AI CHALLENGE</span>
+            <button onclick="showLeaderboardOnly()" class="text-xs bg-white/15 hover:bg-white/25 border border-white/20 px-3 py-1.5 rounded-full font-medium transition flex items-center gap-1 shadow-sm">
+                🏆 Leaderboard
+            </button>
         </div>
 
         <!-- Main Content Area -->
@@ -170,6 +173,10 @@
 
                 <button onclick="startGame()" class="imd-blue text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:bg-blue-800 transition transform hover:-translate-y-1 text-lg w-full">
                     START THE CLOCK
+                </button>
+
+                <button onclick="showLeaderboardOnly()" class="mt-3 w-full bg-white border-2 border-[#003366] text-[#003366] font-bold py-3 px-6 rounded-lg hover:bg-blue-50 transition text-sm flex items-center justify-center gap-2 shadow-sm">
+                    🏆 VIEW LEADERBOARD ONLY
                 </button>
             </div>
         `;
@@ -359,15 +366,16 @@
                 </div>
 
                 <div class="flex justify-between items-center mb-1.5 px-1">
-                    <div class="flex items-center gap-1.5">
-                        <h3 class="font-bold text-gray-800 uppercase tracking-wide text-xs">Live Leaderboard</h3>
-                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800">
-                            ● Google Sheet
-                        </span>
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wide text-xs">Live Leaderboard</h3>
+                    <div class="flex items-center gap-2">
+                        <button onclick="showLeaderboardOnly()" class="text-[11px] text-blue-700 hover:text-blue-900 font-semibold hover:underline">
+                            View All ↗
+                        </button>
+                        <span class="text-gray-300">•</span>
+                        <button onclick="refreshLeaderboard(this)" class="text-[11px] text-blue-700 hover:text-blue-900 font-semibold flex items-center gap-1 hover:underline">
+                            🔄 Refresh
+                        </button>
                     </div>
-                    <button onclick="refreshLeaderboard(this)" class="text-[11px] text-blue-700 hover:text-blue-900 font-semibold flex items-center gap-1 hover:underline">
-                        🔄 Refresh
-                    </button>
                 </div>
                 <div class="bg-white rounded-lg border border-gray-200 mb-3 max-h-36 overflow-y-auto">
                     ${leaderboardHTML}
@@ -402,6 +410,124 @@
                 }
             }
             renderLeaderboard();
+        }
+
+        function showLeaderboardOnly() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.screen = 'LEADERBOARD_ONLY';
+            renderLeaderboardOnly();
+
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                fetch(APPS_SCRIPT_URL)
+                    .then(res => res.json())
+                    .then(cloudData => {
+                        if (Array.isArray(cloudData) && cloudData.length > 0) {
+                            leaderboardDB = cloudData;
+                            try {
+                                localStorage.setItem('imd_ai_leaderboard', JSON.stringify(leaderboardDB));
+                            } catch (e) {}
+                            if (state.screen === 'LEADERBOARD_ONLY') {
+                                renderLeaderboardOnly();
+                            }
+                        }
+                    })
+                    .catch(() => {});
+            }
+        }
+
+        async function refreshLeaderboardOnly(btn) {
+            if (btn) btn.innerText = '⌛ Loading...';
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                try {
+                    const res = await fetch(APPS_SCRIPT_URL);
+                    if (res.ok) {
+                        const cloudData = await res.json();
+                        if (Array.isArray(cloudData)) {
+                            leaderboardDB = cloudData;
+                            try {
+                                localStorage.setItem('imd_ai_leaderboard', JSON.stringify(leaderboardDB));
+                            } catch (e) {}
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Could not fetch leaderboard:', e);
+                }
+            }
+            renderLeaderboardOnly();
+        }
+
+        function renderLeaderboardOnly() {
+            const sorted = [...leaderboardDB].sort((a, b) => (b.score || 0) - (a.score || 0));
+
+            let rowsHTML = sorted.length === 0
+                ? `<div class="p-8 text-center text-gray-400 text-xs italic bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                    No scores recorded yet.<br>Be the first to take the challenge!
+                   </div>`
+                : sorted.map((entry, index) => {
+                    const isMe = state.nickname && entry.name && entry.name.toLowerCase() === state.nickname.toLowerCase();
+                    const rankMedal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+                    const cardStyle = index === 0 
+                        ? 'bg-amber-50/80 border-amber-200 text-amber-950' 
+                        : index === 1 
+                        ? 'bg-slate-50 border-slate-200 text-slate-900' 
+                        : index === 2 
+                        ? 'bg-orange-50/60 border-orange-200 text-orange-950' 
+                        : isMe 
+                        ? 'bg-blue-50 border-blue-200' 
+                        : 'bg-white border-gray-100 hover:border-gray-200';
+
+                    return `
+                    <div class="flex justify-between items-center p-3 rounded-lg border ${cardStyle} mb-2 shadow-xs transition">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <span class="font-bold text-sm w-6 text-center shrink-0 ${index < 3 ? 'text-base' : 'text-gray-500 font-mono'}">${rankMedal}</span>
+                            <div class="truncate">
+                                <div class="font-bold text-gray-800 text-sm truncate ${isMe ? 'imd-text-blue' : ''}">
+                                    ${entry.name || 'Anonymous'} ${isMe ? '<span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold ml-1">You</span>' : ''}
+                                </div>
+                                <div class="text-[11px] text-gray-500 font-normal">
+                                    ${entry.correct !== undefined && entry.total ? `${entry.correct}/${entry.total} correct` : ''}
+                                    ${entry.correct !== undefined && entry.total && entry.time ? ' • ' : ''}
+                                    ${entry.time ? `${entry.time}s` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0 ml-2">
+                            <span class="text-base font-black text-gray-900">${entry.score}</span>
+                            <span class="text-[10px] text-gray-500 font-normal">pts</span>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+
+            contentDiv.innerHTML = `
+            <div class="fade-in flex flex-col h-full">
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <button onclick="resetApp()" class="text-xs font-semibold text-gray-600 hover:text-gray-900 flex items-center gap-1 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition">
+                        ← Back
+                    </button>
+                    <div class="text-center">
+                        <h2 class="text-lg font-bold imd-text-blue">Live Leaderboard</h2>
+                        <p class="text-[11px] text-gray-500">${sorted.length} Participant${sorted.length === 1 ? '' : 's'}</p>
+                    </div>
+                    <button onclick="refreshLeaderboardOnly(this)" class="text-xs font-semibold text-blue-700 hover:text-blue-900 flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <!-- Scrollable Standings -->
+                <div class="flex-grow overflow-y-auto pr-1 mb-4 rounded-lg">
+                    ${rowsHTML}
+                </div>
+
+                <!-- Bottom Button -->
+                <div class="mt-auto pt-2">
+                    <button onclick="resetApp()" class="w-full imd-blue text-white font-bold py-3.5 rounded-lg hover:bg-blue-800 transition shadow text-sm flex items-center justify-center gap-2">
+                        🎮 PLAY CHALLENGE
+                    </button>
+                </div>
+            </div>
+            `;
         }
 
         // --- Logic ---
@@ -534,6 +660,7 @@
         }
 
         function resetApp() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
             state = {
                 screen: 'ONBOARDING',
                 nickname: '',
