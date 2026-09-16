@@ -298,18 +298,24 @@
             leaderboardDB.sort((a, b) => b.score - a.score);
 
             let leaderboardHTML = leaderboardDB.length === 0 
-                ? '<div class="p-4 text-center text-gray-400 text-xs italic">No previous scores on this device yet.</div>'
-                : leaderboardDB.slice(0, 5).map((entry, index) => `
-            <div class="flex justify-between items-center p-2.5 ${entry.name === state.nickname ? 'bg-blue-50 border border-blue-200 font-bold' : 'border-b border-gray-100'} rounded mb-1 text-xs">
-                <div class="flex items-center gap-2.5">
-                    <span class="text-gray-400 font-mono w-4">${index + 1}.</span>
-                    <span class="${entry.name === state.nickname ? 'imd-text-blue' : 'text-gray-700'}">${entry.name}</span>
-                </div>
-                <div class="text-right">
-                    <div class="text-gray-900 font-semibold">${entry.score} <span class="text-[10px] text-gray-500 font-normal">pts</span></div>
-                </div>
-            </div>
-        `).join('');
+                ? '<div class="p-4 text-center text-gray-400 text-xs italic">No scores recorded yet. Be the first!</div>'
+                : leaderboardDB.slice(0, 10).map((entry, index) => {
+                    const isMe = state.nickname && entry.name && entry.name.toLowerCase() === state.nickname.toLowerCase();
+                    const rankMedal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+                    return `
+                    <div class="flex justify-between items-center p-2.5 ${isMe ? 'bg-blue-50 border border-blue-200 font-bold' : 'border-b border-gray-100'} rounded mb-1 text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono w-5 text-center text-gray-500 font-semibold">${rankMedal}</span>
+                            <span class="${isMe ? 'imd-text-blue font-bold' : 'text-gray-800'}">${entry.name}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-gray-900 font-extrabold">${entry.score}</span>
+                            <span class="text-[10px] text-gray-500 font-normal">pts</span>
+                            ${entry.time ? `<span class="text-[10px] text-gray-400 ml-1">(${entry.time}s)</span>` : ''}
+                        </div>
+                    </div>
+                `;
+                }).join('');
 
             const timeBonus = Math.max(0, Math.floor((30 - parseFloat(state.timeElapsed)) * 10));
             const accuracyPercent = Math.round((state.correctCount / dataset.length) * 100);
@@ -352,11 +358,18 @@
                     </div>
                 </div>
 
-                <div class="flex justify-between items-center mb-1 px-1">
-                    <h3 class="font-bold text-gray-800 uppercase tracking-wide text-xs">Recent Scores</h3>
-                    <button onclick="clearLocalHistory()" class="text-[10px] text-gray-400 hover:text-red-500 underline">Reset device scores</button>
+                <div class="flex justify-between items-center mb-1.5 px-1">
+                    <div class="flex items-center gap-1.5">
+                        <h3 class="font-bold text-gray-800 uppercase tracking-wide text-xs">Live Leaderboard</h3>
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800">
+                            ● Google Sheet
+                        </span>
+                    </div>
+                    <button onclick="refreshLeaderboard(this)" class="text-[11px] text-blue-700 hover:text-blue-900 font-semibold flex items-center gap-1 hover:underline">
+                        🔄 Refresh
+                    </button>
                 </div>
-                <div class="bg-white rounded-lg border border-gray-200 mb-3 max-h-32 overflow-y-auto">
+                <div class="bg-white rounded-lg border border-gray-200 mb-3 max-h-36 overflow-y-auto">
                     ${leaderboardHTML}
                 </div>
 
@@ -372,12 +385,23 @@
         `;
         }
 
-        function clearLocalHistory() {
-            if (confirm("Reset local leaderboard history on this device?")) {
-                localStorage.removeItem('imd_ai_leaderboard');
-                leaderboardDB = [];
-                renderLeaderboard();
+        async function refreshLeaderboard(btn) {
+            if (btn) btn.innerText = '⌛ Loading...';
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                try {
+                    const res = await fetch(APPS_SCRIPT_URL);
+                    if (res.ok) {
+                        const cloudData = await res.json();
+                        if (Array.isArray(cloudData) && cloudData.length > 0) {
+                            leaderboardDB = cloudData;
+                            localStorage.setItem('imd_ai_leaderboard', JSON.stringify(leaderboardDB));
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Could not fetch leaderboard:', e);
+                }
             }
+            renderLeaderboard();
         }
 
         // --- Logic ---
@@ -457,8 +481,8 @@
                 timestamp: new Date().toISOString()
             };
 
+            // 1. Send data to Google Sheets via Apps Script Web App
             try {
-                // Send data to Google Sheets via Apps Script Web App
                 if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
                     await fetch(APPS_SCRIPT_URL, {
                         method: 'POST',
@@ -475,12 +499,29 @@
                 console.error("Error saving to Google Sheets:", error);
             }
 
-            // Save locally and persist in localStorage
+            // Immediately record locally
             leaderboardDB.push({
                 name: state.nickname,
                 score: state.score,
                 time: state.timeElapsed
             });
+
+            // 2. Fetch live updated global leaderboard from Google Sheet
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                try {
+                    // Small delay to allow the Google Sheet row to append
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    const res = await fetch(APPS_SCRIPT_URL);
+                    if (res.ok) {
+                        const cloudData = await res.json();
+                        if (Array.isArray(cloudData) && cloudData.length > 0) {
+                            leaderboardDB = cloudData;
+                        }
+                    }
+                } catch (fetchErr) {
+                    console.warn('Could not fetch cloud leaderboard:', fetchErr);
+                }
+            }
 
             try {
                 localStorage.setItem('imd_ai_leaderboard', JSON.stringify(leaderboardDB));
@@ -505,6 +546,21 @@
                 timeElapsed: 0
             };
             renderOnboarding();
+        }
+
+        // Preload live leaderboard from Google Sheets on load
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+            fetch(APPS_SCRIPT_URL)
+                .then(res => res.json())
+                .then(cloudData => {
+                    if (Array.isArray(cloudData) && cloudData.length > 0) {
+                        leaderboardDB = cloudData;
+                        try {
+                            localStorage.setItem('imd_ai_leaderboard', JSON.stringify(leaderboardDB));
+                        } catch (e) {}
+                    }
+                })
+                .catch(() => {});
         }
 
         // Init
