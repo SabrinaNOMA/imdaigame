@@ -101,28 +101,28 @@
         // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
         const APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
-        // Dataset for the game (Using Hyperrealism vs AI examples)
+        // Dataset for the game (Real vs AI)
         const dataset = [
-            { id: 1, url: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800', answer: 'Real', hint: 'Thick impasto texture. Look at the brush strokes.' },
-            { id: 2, url: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800', answer: 'AI', hint: 'The background blurs unnaturally into the subject.' },
-            { id: 3, url: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800', answer: 'Real', hint: 'Hyperrealistic portrait. Took 400 hours to paint.' },
-            { id: 4, url: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?w=800', answer: 'AI', hint: 'Impossible geometry in the lower left corner.' },
-            { id: 5, url: 'https://images.unsplash.com/photo-1580136608260-4eb11f4b24fe?w=800', answer: 'Real', hint: 'Incredible detail on the reflections.' },
-            { id: 6, url: 'https://images.unsplash.com/photo-1549490349-8643362247b5?w=800', answer: 'AI', hint: 'The lighting source contradicts the shadows.' },
-            { id: 7, url: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=800', answer: 'Real', hint: 'Classic surrealism. Hand-painted acrylic.' },
-            { id: 8, url: 'https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800', answer: 'AI', hint: 'Count the fingers holding the cup.' },
-            { id: 9, url: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=800', answer: 'Real', hint: 'Macro photography of mixed oil paints.' },
-            { id: 10, url: 'https://images.unsplash.com/photo-1515405295579-ba7b45403062?w=800', answer: 'AI', hint: 'Symmetry is mathematically too perfect.' },
-            { id: 11, url: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=800', answer: 'Real', hint: 'Notice the subtle imperfections in the canvas weave.' },
-            { id: 12, url: 'https://images.unsplash.com/photo-1578301978693-85fa9c026109?w=800', answer: 'AI', hint: 'The text in the background is complete gibberish.' },
-            { id: 13, url: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800', answer: 'Real', hint: 'Contemporary hyperrealistic still life.' },
-            { id: 14, url: 'https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=800', answer: 'AI', hint: 'The earring blends directly into the jawline.' },
-            { id: 15, url: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=800', answer: 'Real', hint: 'Oil painting with masterful water droplet rendering.' },
-            { id: 16, url: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800', answer: 'AI', hint: 'The brushstrokes do not follow the form of the objects.' },
-            { id: 17, url: 'https://images.unsplash.com/photo-1582201942988-13e60e4556ce?w=800', answer: 'Real', hint: 'Extremely detailed urban realism.' },
-            { id: 18, url: 'https://images.unsplash.com/photo-1565373677328-9366df6b1897?w=800', answer: 'AI', hint: 'Look closely at the pupils; they are misshapen.' },
-            { id: 19, url: 'https://images.unsplash.com/photo-1501472312651-726afe119ff1?w=800', answer: 'Real', hint: 'Physical paint splatters create natural depth.' },
-            { id: 20, url: 'https://images.unsplash.com/photo-1614729939124-03290b5509ce?w=800', answer: 'AI', hint: 'Hyper-detailed foreground, but the ears are blurry.' }
+            { id: 1, url: './images/01_real.jpg', answer: 'Real', title: 'Wheat Field with Cypresses', artist: 'Vincent van Gogh (1889)', source: 'The Metropolitan Museum of Art', hint: 'Thick impasto texture with expressive swirling brush strokes.' },
+            { id: 2, url: './images/02_ai.jpg', answer: 'AI', title: 'Futuristic Organic Sculpture', artist: 'Google Imagen / Gemini AI', source: 'AI Generated', hint: 'The background blurs unnaturally into the iridescent floating sculpture.' },
+            { id: 3, url: './images/03_real.jpg', answer: 'Real', title: 'Gray Weather, Grande Jatte', artist: 'Georges Seurat (ca. 1888)', source: 'The Metropolitan Museum of Art', hint: 'Pointillism masterpiece created with meticulous tiny dots of paint.' },
+            { id: 4, url: './images/04_ai.jpg', answer: 'AI', title: 'The Infinite Library of Babel', artist: 'Google Imagen / Gemini AI', source: 'AI Generated', hint: 'Impossible staircase geometry and perspective twists in the lower arches.' },
+            { id: 5, url: './images/05_real.jpg', answer: 'Real', title: 'The Abduction of the Sabine Women', artist: 'Nicolas Poussin (1634)', source: 'The Metropolitan Museum of Art', hint: 'Classical Baroque figurative composition with natural human musculature.' },
+            { id: 6, url: './images/06_ai.jpg', answer: 'AI', title: 'Portrait of the Renaissance Scholar', artist: 'Google Imagen / Gemini AI', source: 'AI Generated', hint: 'Contradictory shadow directions: light enters from the window but shadows cast backward.' },
+            { id: 7, url: './images/07_real.jpg', answer: 'Real', title: 'The Great Wave off Kanagawa', artist: 'Katsushika Hokusai (1832)', source: 'The Metropolitan Museum of Art', hint: 'Traditional Japanese woodblock print with masterfully carved contour lines.' },
+            { id: 8, url: './images/08_ai.jpg', answer: 'AI', title: 'Alice and Sparkle (Claw Hand)', artist: 'Midjourney v3 (2022)', source: 'Wikimedia / Midjourney', hint: 'Famous early AI anatomical glitch: unnatural claw-like fingers.' },
+            { id: 9, url: './images/09_real.jpg', answer: 'Real', title: 'Self-Portrait with a Straw Hat', artist: 'Vincent van Gogh (1887)', source: 'The Metropolitan Museum of Art', hint: 'Rhythmic directional brushstrokes applied with pure pigment.' },
+            { id: 10, url: './images/10_ai.png', answer: 'AI', title: 'Cosmic Swimming Pool', artist: 'Midjourney', source: 'Wikimedia Commons', hint: 'Hyper-saturated surreal dreamscape blending cosmic nebulae into water.' },
+            { id: 11, url: './images/11_real.jpg', answer: 'Real', title: 'Young Woman with a Water Pitcher', artist: 'Johannes Vermeer (1662)', source: 'The Metropolitan Museum of Art', hint: 'Subtle physics of window light filtering through leaded stained glass.' },
+            { id: 12, url: './images/12_ai.png', answer: 'AI', title: 'Dark Castle with Dragon', artist: 'Midjourney v4', source: 'Wikimedia Commons', hint: 'Gothic fantasy rendered with seamless digital diffusion lighting.' },
+            { id: 13, url: './images/13_real.jpg', answer: 'Real', title: 'Bridge over a Pond of Water Lilies', artist: 'Claude Monet (1899)', source: 'The Metropolitan Museum of Art', hint: 'Authentic plein-air Impressionist layered dabs of color.' },
+            { id: 14, url: './images/14_ai.png', answer: 'AI', title: 'Mechanical Steampunk Dove', artist: 'Midjourney v4', source: 'Wikimedia Commons', hint: 'Intricate clockwork feathers with subtle geometric inconsistencies.' },
+            { id: 15, url: './images/15_real.jpg', answer: 'Real', title: 'Shoes', artist: 'Vincent van Gogh (1888)', source: 'The Metropolitan Museum of Art', hint: 'Heavy textural impasto on worn leather shoes with organic paint distress.' },
+            { id: 16, url: './images/16_ai.png', answer: 'AI', title: 'Old Castle Panorama', artist: 'Midjourney v4', source: 'Wikimedia Commons', hint: 'Panoramic landscape where architectural battlements melt into the cliffs.' },
+            { id: 17, url: './images/17_real.jpg', answer: 'Real', title: 'The Death of Socrates', artist: 'Jacques Louis David (1787)', source: 'The Metropolitan Museum of Art', hint: 'Rigorous Neoclassical anatomy, linear perspective, and controlled drapery.' },
+            { id: 18, url: './images/18_ai.png', answer: 'AI', title: 'Little Ice Bear in Snow', artist: 'Midjourney v4', source: 'Wikimedia Commons', hint: 'Sub-surface fur scatter and stylized eyes typical of diffusion rendering.' },
+            { id: 19, url: './images/19_real.jpg', answer: 'Real', title: 'Blind Orion Searching for the Rising Sun', artist: 'Nicolas Poussin (1658)', source: 'The Metropolitan Museum of Art', hint: 'Atmospheric mist and layered receding classical landscape depth.' },
+            { id: 20, url: './images/20_ai.png', answer: 'AI', title: 'Abstract Organic Architecture', artist: 'Midjourney', source: 'Wikimedia Commons', hint: 'Biomorphic flowing geometry that defies standard structural engineering.' }
         ];
 
         // Mock Leaderboard Database (Provides immediate local feedback before sheet sync)
@@ -186,7 +186,15 @@
                     <img src="${item.url}" alt="Artwork ${state.currentIndex + 1}">
                 </div>
                 
-                <p class="text-center text-xs text-gray-400 mb-6 uppercase tracking-widest">Image ${state.currentIndex + 1} of ${dataset.length}</p>
+                <div class="flex justify-between items-center text-xs text-gray-500 mb-2 px-1">
+                    <span class="uppercase tracking-widest text-gray-400 font-semibold">Artwork ${state.currentIndex + 1} of ${dataset.length}</span>
+                    <button onclick="toggleHint()" id="hint-btn" class="text-blue-700 font-semibold hover:underline flex items-center gap-1">
+                        💡 Need a hint?
+                    </button>
+                </div>
+                <div id="hint-box" class="hidden text-xs text-gray-700 bg-blue-50 border border-blue-200 p-2.5 rounded mb-4 fade-in">
+                    ${item.hint}
+                </div>
 
                 <!-- Actions -->
                 <div class="flex gap-4 mt-auto mb-4">
@@ -199,6 +207,56 @@
                 </div>
             </div>
         `;
+        }
+
+        function toggleHint() {
+            const hintBox = document.getElementById('hint-box');
+            const hintBtn = document.getElementById('hint-btn');
+            if (hintBox) {
+                const isHidden = hintBox.classList.contains('hidden');
+                hintBox.classList.toggle('hidden');
+                hintBtn.innerText = isHidden ? '🙈 Hide hint' : '💡 Need a hint?';
+            }
+        }
+
+        function toggleCreditsModal() {
+            let modal = document.getElementById('credits-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'credits-modal';
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in';
+                
+                const listHtml = dataset.map((d, i) => `
+                    <div class="p-2.5 border-b border-gray-100 flex items-start gap-3 text-xs">
+                        <span class="font-bold text-gray-400 w-5">${i + 1}.</span>
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-gray-900">${d.title}</span>
+                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${d.answer === 'Real' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">${d.answer}</span>
+                            </div>
+                            <div class="text-gray-500">${d.artist} • <span class="italic text-gray-400">${d.source}</span></div>
+                        </div>
+                    </div>
+                `).join('');
+
+                modal.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] flex flex-col overflow-hidden">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 class="font-bold text-gray-900 text-sm uppercase tracking-wide">Artwork Dataset & Credits</h3>
+                            <button onclick="toggleCreditsModal()" class="text-gray-400 hover:text-gray-600 text-lg font-bold">✕</button>
+                        </div>
+                        <div class="overflow-y-auto flex-grow p-2">
+                            ${listHtml}
+                        </div>
+                        <div class="p-3 border-t border-gray-100 text-center bg-gray-50">
+                            <button onclick="toggleCreditsModal()" class="imd-blue text-white text-xs font-semibold px-4 py-2 rounded-lg">Close</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } else {
+                modal.classList.toggle('hidden');
+            }
         }
 
         function renderSyncing() {
@@ -231,29 +289,34 @@
 
             contentDiv.innerHTML = `
             <div class="fade-in flex flex-col h-full">
-                <div class="text-center mb-6">
-                    <div class="text-5xl mb-2">🏆</div>
+                <div class="text-center mb-4">
+                    <div class="text-4xl mb-1">🏆</div>
                     <h2 class="text-2xl font-bold imd-text-blue mb-1">Challenge Complete!</h2>
-                    <p class="text-gray-500">Time: ${state.timeElapsed} seconds</p>
+                    <p class="text-gray-500 text-sm">Time: ${state.timeElapsed} seconds</p>
                 </div>
 
-                <div class="bg-gray-900 text-white p-6 rounded-xl text-center shadow-lg mb-8 relative overflow-hidden">
+                <div class="bg-gray-900 text-white p-5 rounded-xl text-center shadow-lg mb-6 relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-2 opacity-10">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
                     </div>
-                    <div class="text-sm uppercase tracking-wider text-gray-400 font-semibold mb-1">Total Score</div>
-                    <div class="text-5xl font-bold text-white mb-2">${state.score}</div>
-                    <div class="text-xs text-green-400">Includes +${timeBonus} speed bonus!</div>
+                    <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Total Score</div>
+                    <div class="text-4xl font-bold text-white mb-1">${state.score}</div>
+                    <div class="text-xs text-green-400 font-medium">Includes +${timeBonus} speed bonus!</div>
                 </div>
 
-                <h3 class="font-bold text-gray-800 uppercase tracking-wide text-sm mb-3 px-2">Live Leaderboard</h3>
-                <div class="bg-white rounded-lg border border-gray-200 mb-auto flex-grow overflow-y-auto">
+                <h3 class="font-bold text-gray-800 uppercase tracking-wide text-xs mb-2 px-1">Live Leaderboard</h3>
+                <div class="bg-white rounded-lg border border-gray-200 mb-4 max-h-40 overflow-y-auto">
                     ${leaderboardHTML}
                 </div>
 
-                <button onclick="resetApp()" class="mt-6 w-full bg-gray-200 text-gray-800 font-bold py-4 rounded-lg hover:bg-gray-300 transition">
-                    PLAY AGAIN
-                </button>
+                <div class="flex flex-col gap-2 mt-auto">
+                    <button onclick="resetApp()" class="w-full imd-blue text-white font-bold py-3.5 rounded-lg hover:bg-blue-800 transition shadow text-base">
+                        PLAY AGAIN
+                    </button>
+                    <button onclick="toggleCreditsModal()" class="w-full bg-gray-100 text-gray-700 font-semibold py-2.5 rounded-lg hover:bg-gray-200 transition text-xs flex items-center justify-center gap-1.5">
+                        📜 View Artwork Answers & Credits
+                    </button>
+                </div>
             </div>
         `;
         }
