@@ -125,17 +125,29 @@
             { id: 20, url: './images/20_ai.png', answer: 'AI', title: 'Abstract Organic Architecture', artist: 'Midjourney', source: 'Wikimedia Commons', hint: 'Biomorphic flowing geometry that defies standard structural engineering.' }
         ];
 
-        // Mock Leaderboard Database (Provides immediate local feedback before sheet sync)
+        // Mock Leaderboard Database with localStorage persistence
         let leaderboardDB = [
-            { name: 'AI_Master', score: 450, time: 25.1 },
-            { name: 'ArtCritic', score: 420, time: 28.5 }
+            { name: 'AI_Master', score: 1950, time: 24.1 },
+            { name: 'ArtCritic', score: 1700, time: 28.5 },
+            { name: 'MuseumCurator', score: 1500, time: 35.2 }
         ];
+
+        try {
+            const savedLeaderboard = localStorage.getItem('imd_ai_leaderboard');
+            if (savedLeaderboard) {
+                leaderboardDB = JSON.parse(savedLeaderboard);
+            }
+        } catch (e) {
+            console.warn('Could not load leaderboard from localStorage', e);
+        }
 
         // Game State
         let state = {
             screen: 'ONBOARDING', // ONBOARDING, PLAYING, SYNCING, LEADERBOARD
             nickname: '',
             score: 0,
+            correctCount: 0,
+            answers: [], // Stores user choices: { id, guess, correct, item }
             currentIndex: 0,
             startTime: 0,
             timerInterval: null,
@@ -226,30 +238,42 @@
                 modal.id = 'credits-modal';
                 modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in';
                 
-                const listHtml = dataset.map((d, i) => `
-                    <div class="p-2.5 border-b border-gray-100 flex items-start gap-3 text-xs">
-                        <span class="font-bold text-gray-400 w-5">${i + 1}.</span>
+                const listHtml = dataset.map((d, i) => {
+                    const record = state.answers ? state.answers.find(a => a.id === d.id) : null;
+                    const userGuess = record ? record.guess : null;
+                    const wasCorrect = record ? record.correct : null;
+
+                    return `
+                    <div class="p-3 border-b border-gray-100 flex items-start gap-3 text-xs ${wasCorrect === false ? 'bg-red-50/50' : wasCorrect === true ? 'bg-green-50/30' : ''}">
+                        <span class="font-bold text-gray-400 w-5 pt-0.5">${i + 1}.</span>
                         <div class="flex-grow">
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center justify-between gap-2 mb-0.5">
                                 <span class="font-bold text-gray-900">${d.title}</span>
-                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${d.answer === 'Real' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">${d.answer}</span>
+                                <div class="flex items-center gap-1.5 flex-shrink-0">
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${d.answer === 'Real' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">Correct: ${d.answer}</span>
+                                    ${record ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${wasCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">${wasCorrect ? '✅ You: ' + userGuess : '❌ You: ' + userGuess}</span>` : ''}
+                                </div>
                             </div>
                             <div class="text-gray-500">${d.artist} • <span class="italic text-gray-400">${d.source}</span></div>
                         </div>
                     </div>
-                `).join('');
+                `;
+                }).join('');
 
                 modal.innerHTML = `
                     <div class="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] flex flex-col overflow-hidden">
                         <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h3 class="font-bold text-gray-900 text-sm uppercase tracking-wide">Artwork Dataset & Credits</h3>
+                            <div>
+                                <h3 class="font-bold text-gray-900 text-sm uppercase tracking-wide">Artworks & Your Answers</h3>
+                                <p class="text-[11px] text-gray-500">Green = Correct guess, Red = Missed guess</p>
+                            </div>
                             <button onclick="toggleCreditsModal()" class="text-gray-400 hover:text-gray-600 text-lg font-bold">✕</button>
                         </div>
-                        <div class="overflow-y-auto flex-grow p-2">
+                        <div class="overflow-y-auto flex-grow p-1">
                             ${listHtml}
                         </div>
                         <div class="p-3 border-t border-gray-100 text-center bg-gray-50">
-                            <button onclick="toggleCreditsModal()" class="imd-blue text-white text-xs font-semibold px-4 py-2 rounded-lg">Close</button>
+                            <button onclick="toggleCreditsModal()" class="imd-blue text-white text-xs font-semibold px-5 py-2 rounded-lg hover:bg-blue-800 transition">Close</button>
                         </div>
                     </div>
                 `;
@@ -274,47 +298,72 @@
             leaderboardDB.sort((a, b) => b.score - a.score);
 
             let leaderboardHTML = leaderboardDB.slice(0, 5).map((entry, index) => `
-            <div class="flex justify-between items-center p-3 ${entry.name === state.nickname ? 'bg-blue-50 border border-blue-200 font-bold' : 'border-b border-gray-100'} rounded mb-1">
-                <div class="flex items-center gap-3">
+            <div class="flex justify-between items-center p-2.5 ${entry.name === state.nickname ? 'bg-blue-50 border border-blue-200 font-bold' : 'border-b border-gray-100'} rounded mb-1 text-xs">
+                <div class="flex items-center gap-2.5">
                     <span class="text-gray-400 font-mono w-4">${index + 1}.</span>
                     <span class="${entry.name === state.nickname ? 'imd-text-blue' : 'text-gray-700'}">${entry.name}</span>
                 </div>
                 <div class="text-right">
-                    <div class="text-gray-900">${entry.score} <span class="text-xs text-gray-500 font-normal">pts</span></div>
+                    <div class="text-gray-900 font-semibold">${entry.score} <span class="text-[10px] text-gray-500 font-normal">pts</span></div>
                 </div>
             </div>
         `).join('');
 
-            const timeBonus = Math.max(0, Math.floor((30 - state.timeElapsed) * 10));
+            const timeBonus = Math.max(0, Math.floor((30 - parseFloat(state.timeElapsed)) * 10));
+            const accuracyPercent = Math.round((state.correctCount / dataset.length) * 100);
 
             contentDiv.innerHTML = `
             <div class="fade-in flex flex-col h-full">
-                <div class="text-center mb-4">
-                    <div class="text-4xl mb-1">🏆</div>
-                    <h2 class="text-2xl font-bold imd-text-blue mb-1">Challenge Complete!</h2>
-                    <p class="text-gray-500 text-sm">Time: ${state.timeElapsed} seconds</p>
+                <div class="text-center mb-3">
+                    <div class="text-3xl mb-0.5">🏆</div>
+                    <h2 class="text-xl font-bold imd-text-blue">Challenge Complete!</h2>
+                    <p class="text-gray-500 text-xs">Total Time: ${state.timeElapsed} seconds</p>
                 </div>
 
-                <div class="bg-gray-900 text-white p-5 rounded-xl text-center shadow-lg mb-6 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-2 opacity-10">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                <!-- Detailed Score Breakdown Card -->
+                <div class="bg-gradient-to-br from-[#002244] to-[#003366] text-white p-4 rounded-xl text-center shadow-lg mb-3 relative overflow-hidden">
+                    <div class="text-[10px] uppercase tracking-widest text-blue-200 font-bold mb-0.5">Your Accuracy</div>
+                    
+                    <div class="flex items-baseline justify-center gap-1 my-0.5">
+                        <span class="text-4xl font-black text-white">${state.correctCount}</span>
+                        <span class="text-lg font-medium text-blue-200">/ ${dataset.length}</span>
                     </div>
-                    <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Total Score</div>
-                    <div class="text-4xl font-bold text-white mb-1">${state.score}</div>
-                    <div class="text-xs text-green-400 font-medium">Includes +${timeBonus} speed bonus!</div>
+                    
+                    <div class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full inline-block mb-3 ${state.correctCount >= 16 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : state.correctCount >= 10 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
+                        ${accuracyPercent}% Correct • ${state.correctCount >= 18 ? 'Master Critic 🎓' : state.correctCount >= 14 ? 'Sharp Eye 👁️' : 'Apprentice 🎨'}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-2.5 border-t border-blue-900/60 text-xs">
+                        <div class="bg-blue-950/60 p-1.5 rounded border border-blue-800/40">
+                            <div class="text-blue-300 text-[10px]">Artworks Guessed</div>
+                            <div class="font-bold text-sm text-white">+${state.correctCount * 100} <span class="text-[9px] font-normal text-blue-300">pts</span></div>
+                        </div>
+                        <div class="bg-blue-950/60 p-1.5 rounded border border-blue-800/40">
+                            <div class="text-blue-300 text-[10px]">Speed Bonus</div>
+                            <div class="font-bold text-sm ${timeBonus > 0 ? 'text-amber-300' : 'text-gray-400'}">+${timeBonus} <span class="text-[9px] font-normal text-blue-300">pts</span></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-2 pt-2 border-t border-blue-900/40 flex justify-between items-center text-xs px-1 text-blue-200">
+                        <span class="font-semibold">Final Score:</span>
+                        <span class="font-black text-white text-base">${state.score} pts</span>
+                    </div>
                 </div>
 
-                <h3 class="font-bold text-gray-800 uppercase tracking-wide text-xs mb-2 px-1">Live Leaderboard</h3>
-                <div class="bg-white rounded-lg border border-gray-200 mb-4 max-h-40 overflow-y-auto">
+                <div class="flex justify-between items-center mb-1 px-1">
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wide text-xs">Top Rankings</h3>
+                    <span class="text-[10px] text-gray-400">All-Time</span>
+                </div>
+                <div class="bg-white rounded-lg border border-gray-200 mb-3 max-h-32 overflow-y-auto">
                     ${leaderboardHTML}
                 </div>
 
                 <div class="flex flex-col gap-2 mt-auto">
-                    <button onclick="resetApp()" class="w-full imd-blue text-white font-bold py-3.5 rounded-lg hover:bg-blue-800 transition shadow text-base">
+                    <button onclick="resetApp()" class="w-full imd-blue text-white font-bold py-3 rounded-lg hover:bg-blue-800 transition shadow text-sm">
                         PLAY AGAIN
                     </button>
-                    <button onclick="toggleCreditsModal()" class="w-full bg-gray-100 text-gray-700 font-semibold py-2.5 rounded-lg hover:bg-gray-200 transition text-xs flex items-center justify-center gap-1.5">
-                        📜 View Artwork Answers & Credits
+                    <button onclick="toggleCreditsModal()" class="w-full bg-blue-50 text-blue-900 border border-blue-200 font-semibold py-2.5 rounded-lg hover:bg-blue-100 transition text-xs flex items-center justify-center gap-1.5">
+                        📜 Review Which Artworks You Got Right/Wrong
                     </button>
                 </div>
             </div>
@@ -326,13 +375,14 @@
         function startGame() {
             const input = document.getElementById('nickname-input').value.trim();
             if (!input) {
-                // Using a simple alert for demo purposes, but in production, a custom modal is better
                 alert("Please enter a nickname!");
                 return;
             }
 
             state.nickname = input;
             state.score = 0;
+            state.correctCount = 0;
+            state.answers = [];
             state.currentIndex = 0;
             state.startTime = Date.now();
             state.screen = 'PLAYING';
@@ -355,11 +405,20 @@
 
         function makeGuess(guess) {
             const currentItem = dataset[state.currentIndex];
+            const isCorrect = (guess === currentItem.answer);
 
-            // Base score for correct answer
-            if (guess === currentItem.answer) {
+            if (isCorrect) {
+                state.correctCount++;
                 state.score += 100;
             }
+
+            // Track individual answer for the review screen
+            state.answers.push({
+                id: currentItem.id,
+                guess: guess,
+                correct: isCorrect,
+                item: currentItem
+            });
 
             state.currentIndex++;
 
@@ -382,6 +441,8 @@
             const payload = {
                 nickname: state.nickname,
                 score: state.score,
+                correct: state.correctCount,
+                total: dataset.length,
                 time: state.timeElapsed,
                 timestamp: new Date().toISOString()
             };
@@ -398,19 +459,24 @@
                         body: JSON.stringify(payload)
                     });
                 } else {
-                    // Simulate network delay if URL isn't set yet (for testing)
-                    await new Promise(resolve => setTimeout(resolve, 1200));
+                    await new Promise(resolve => setTimeout(resolve, 800));
                 }
             } catch (error) {
                 console.error("Error saving to Google Sheets:", error);
             }
 
-            // Save locally so the user instantly sees their score on their screen
+            // Save locally and persist in localStorage
             leaderboardDB.push({
                 name: state.nickname,
                 score: state.score,
                 time: state.timeElapsed
             });
+
+            try {
+                localStorage.setItem('imd_ai_leaderboard', JSON.stringify(leaderboardDB));
+            } catch (e) {
+                console.warn('Could not save to localStorage', e);
+            }
 
             state.screen = 'LEADERBOARD';
             renderLeaderboard();
@@ -421,6 +487,8 @@
                 screen: 'ONBOARDING',
                 nickname: '',
                 score: 0,
+                correctCount: 0,
+                answers: [],
                 currentIndex: 0,
                 startTime: 0,
                 timerInterval: null,
