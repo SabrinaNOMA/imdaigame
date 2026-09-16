@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMD: Real vs AI Challenge</title>
+    <title>IMD Tech Community Challenge</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -21,11 +21,31 @@
         }
 
         .imd-blue {
-            background-color: #003366;
+            background-color: #001E62;
         }
 
         .imd-text-blue {
-            color: #003366;
+            color: #001E62;
+        }
+
+        .btn-action-primary {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.025em;
+            border-radius: 8px;
+            transition: all 0.15s ease-in-out;
+        }
+        .btn-action-primary:active {
+            transform: scale(0.985);
+        }
+
+        /* Pure white inversion for IMD official logo on dark navy header */
+        .imd-logo-white {
+            filter: brightness(0) invert(1);
         }
 
         #app-container {
@@ -85,18 +105,46 @@
 <body>
 
     <div id="app-container" class="flex flex-col">
-        <!-- Header -->
-        <div class="imd-blue text-white p-4 font-bold text-lg tracking-wider shadow-md z-10 flex justify-between items-center px-5">
-            <span onclick="resetApp()" class="cursor-pointer">IMD AI CHALLENGE</span>
-            <button onclick="showLeaderboardOnly()" class="text-xs bg-white/15 hover:bg-white/25 border border-white/20 px-3 py-1.5 rounded-full font-medium transition flex items-center gap-1 shadow-sm">
-                🏆 Leaderboard
+        <!-- Header with official IMD Logo -->
+        <div class="imd-blue text-white p-3 font-bold text-xs tracking-wider shadow-md z-10 flex justify-between items-center px-4">
+            <div onclick="resetApp()" class="flex items-center gap-2 cursor-pointer">
+                <img src="./images/imd_logo.png" alt="IMD" class="h-5 object-contain imd-logo-white">
+                <span class="border-l border-white/20 pl-2 text-[11px] font-bold tracking-wider uppercase text-blue-100">Tech Community Challenge</span>
+            </div>
+            <button onclick="showLeaderboardOnly()" class="text-[10.5px] bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded font-medium transition flex items-center gap-1 shadow-xs ml-2">
+                Leaderboard
             </button>
+        </div>
+
+        <!-- Sub-header attribution ribbon -->
+        <div class="bg-[#001444] text-blue-200 text-[10.5px] py-1.5 px-3 text-center border-b border-blue-900/60 font-medium z-10">
+            This challenge is brought to you by <a href="https://www.imd.org/alumni/communities/tech-community/" target="_blank" class="text-amber-300 font-semibold hover:underline">IMD Tech Community, Alumni ↗</a>
         </div>
 
         <!-- Main Content Area -->
         <div id="screen-content" class="flex-grow p-6 flex flex-col fade-in">
             <!-- Content injected by JS -->
         </div>
+
+        <!-- Persistent Executive Footer -->
+        <footer class="mt-auto py-3.5 px-4 bg-gray-50 border-t border-gray-200 text-center z-10">
+            <p class="text-[11px] text-gray-800 font-semibold italic mb-2">
+                "We empower leaders to thrive in a tech-driven world."
+            </p>
+            <div class="flex items-center justify-center gap-4 text-xs">
+                <a href="https://www.linkedin.com/showcase/imd-tech-community" target="_blank" 
+                   class="inline-flex items-center gap-1 font-semibold text-[#003366] hover:text-blue-900 hover:underline">
+                    <svg class="w-3.5 h-3.5 fill-current text-[#0077B5]" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.25c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63Z"/></svg>
+                    Join us on LinkedIn
+                </a>
+                <span class="text-gray-300">•</span>
+                <a href="https://www.imd.org/alumni/communities/tech-community/" target="_blank" 
+                   class="inline-flex items-center gap-1 font-semibold text-[#003366] hover:text-blue-900 hover:underline">
+                    Learn more
+                    <svg class="w-3 h-3 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </a>
+            </div>
+        </footer>
     </div>
 
     <script>
@@ -128,6 +176,16 @@
             { id: 20, url: './images/20_ai.png', answer: 'AI', title: 'Abstract Organic Architecture', artist: 'Midjourney', source: 'Wikimedia Commons', hint: 'Biomorphic flowing geometry that defies standard structural engineering.' }
         ];
 
+        // Fisher-Yates (Knuth) Shuffle - Pure non-mutating shuffle
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
         // Clean Leaderboard Database (stores real participant scores only)
         let leaderboardDB = [];
 
@@ -148,6 +206,7 @@
             nickname: '',
             score: 0,
             correctCount: 0,
+            gameItems: [], // Active randomized session deck
             answers: [], // Stores user choices: { id, guess, correct, item }
             currentIndex: 0,
             startTime: 0,
@@ -162,64 +221,77 @@
         function renderOnboarding() {
             contentDiv.innerHTML = `
             <div class="flex-grow flex flex-col justify-center text-center fade-in">
-                <h1 class="text-3xl font-bold imd-text-blue mb-2">Real or AI?</h1>
-                <p class="text-gray-600 mb-8">Can you spot the difference between human mastery and algorithmic perfection?</p>
-                
-                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
-                    <label class="block text-left text-sm font-semibold text-gray-700 mb-2">Enter Nickname</label>
-                    <input type="text" id="nickname-input" placeholder="e.g. CyberSamurai" maxlength="15" 
-                           class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-900 text-lg">
+                <!-- Brand Identity Watermark / Hero Crest -->
+                <div class="w-14 h-14 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xs">
+                    <img src="./images/imd_logo.png" alt="IMD" class="h-6 object-contain">
                 </div>
 
-                <button onclick="startGame()" class="imd-blue text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:bg-blue-800 transition transform hover:-translate-y-1 text-lg w-full">
+                <h1 class="text-2xl font-bold imd-text-blue mb-1 tracking-tight">Real or AI?</h1>
+                <div class="text-[11px] uppercase tracking-widest text-gray-400 font-semibold mb-3">Executive Perception Challenge</div>
+                
+                <p class="text-gray-600 text-xs mb-8 max-w-xs mx-auto leading-relaxed">
+                    Can you distinguish between authentic human artistic mastery and state-of-the-art algorithmic synthesis?
+                </p>
+                
+                <div class="bg-gray-50/80 p-4 rounded-xl border border-gray-200 mb-6 text-left shadow-2xs">
+                    <label class="block text-[11px] font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Executive Nickname</label>
+                    <input type="text" id="nickname-input" placeholder="e.g. ExecutiveLeader" maxlength="15" 
+                           class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#001E62] text-sm bg-white">
+                </div>
+
+                <button onclick="startGame()" class="btn-action-primary w-full imd-blue text-white hover:bg-[#001444] shadow-md">
                     START THE CLOCK
                 </button>
 
-                <button onclick="showLeaderboardOnly()" class="mt-3 w-full bg-white border-2 border-[#003366] text-[#003366] font-bold py-3 px-6 rounded-lg hover:bg-blue-50 transition text-sm flex items-center justify-center gap-2 shadow-sm">
-                    🏆 VIEW LEADERBOARD ONLY
+                <button onclick="showLeaderboardOnly()" class="mt-3 w-full bg-white border-2 border-[#001E62] text-[#001E62] font-bold py-2.5 px-4 rounded-lg hover:bg-blue-50 transition text-xs flex items-center justify-center gap-1 shadow-2xs">
+                    View Leaderboard
                 </button>
             </div>
         `;
         }
 
         function renderPlaying() {
-            const item = dataset[state.currentIndex];
+            const totalItems = state.gameItems && state.gameItems.length > 0 ? state.gameItems.length : dataset.length;
+            const item = (state.gameItems && state.gameItems.length > 0) ? state.gameItems[state.currentIndex] : dataset[state.currentIndex];
 
             contentDiv.innerHTML = `
             <div class="fade-in h-full flex flex-col">
                 <!-- Status Bar -->
-                <div class="flex justify-between items-center mb-4">
-                    <div class="text-sm font-semibold text-gray-500">Player: <span class="imd-text-blue">${state.nickname}</span></div>
-                    <div class="text-sm font-bold bg-gray-200 px-3 py-1 rounded-full"><span id="timer-display">0.0</span>s</div>
+                <div class="flex justify-between items-center mb-3">
+                    <div class="text-xs font-semibold text-gray-500">Player: <span class="imd-text-blue font-bold">${state.nickname}</span></div>
+                    <div class="text-xs font-mono font-bold bg-gray-100 text-gray-700 px-2.5 py-1 rounded"><span id="timer-display">0.0</span>s</div>
                 </div>
 
                 <!-- Progress Bar -->
-                <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
-                    <div class="imd-blue h-2 rounded-full transition-all duration-300" style="width: ${((state.currentIndex) / dataset.length) * 100}%"></div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
+                    <div class="imd-blue h-1.5 rounded-full transition-all duration-300" style="width: ${((state.currentIndex) / totalItems) * 100}%"></div>
                 </div>
 
-                <!-- Image -->
-                <div class="img-container shadow-md">
+                <!-- Image with Curatorial Gallery Framing -->
+                <div class="img-container shadow-sm border border-slate-200 rounded-lg overflow-hidden ring-1 ring-black/5">
                     <img src="${item.url}" alt="Artwork ${state.currentIndex + 1}">
                 </div>
                 
-                <div class="flex justify-between items-center text-xs text-gray-500 mb-2 px-1">
-                    <span class="uppercase tracking-widest text-gray-400 font-semibold">Artwork ${state.currentIndex + 1} of ${dataset.length}</span>
-                    <button onclick="toggleHint()" id="hint-btn" class="text-blue-700 font-semibold hover:underline flex items-center gap-1">
-                        💡 Need a hint?
+                <div class="flex justify-between items-center text-[10.5px] text-gray-500 mb-3 px-1">
+                    <span class="inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 font-semibold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
+                        Artwork ${state.currentIndex + 1} / ${totalItems}
+                    </span>
+                    <button onclick="toggleHint()" id="hint-btn" class="text-[#001E62] font-semibold hover:underline flex items-center gap-1">
+                        <svg class="w-3 h-3 text-blue-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                        Need a hint?
                     </button>
                 </div>
                 <div id="hint-box" class="hidden text-xs text-gray-700 bg-blue-50 border border-blue-200 p-2.5 rounded mb-4 fade-in">
                     ${item.hint}
                 </div>
 
-                <!-- Actions -->
-                <div class="flex gap-4 mt-auto mb-4">
-                    <button onclick="makeGuess('Real')" class="flex-1 bg-white border-2 border-[#003366] imd-text-blue font-bold py-4 rounded-lg hover:bg-gray-50 transition text-lg shadow-sm">
-                        🧑‍🎨 REAL
+                <!-- Actions (Unified 52px height) -->
+                <div class="flex gap-3 mt-auto mb-2">
+                    <button onclick="makeGuess('Real')" class="btn-action-primary flex-1 bg-white border-2 border-[#001E62] imd-text-blue hover:bg-gray-50 shadow-xs">
+                        REAL
                     </button>
-                    <button onclick="makeGuess('AI')" class="flex-1 imd-blue text-white font-bold py-4 rounded-lg hover:bg-blue-800 transition text-lg shadow-sm">
-                        🤖 AI
+                    <button onclick="makeGuess('AI')" class="btn-action-primary flex-1 imd-blue text-white hover:bg-[#001444] shadow-xs">
+                        AI
                     </button>
                 </div>
             </div>
@@ -232,7 +304,9 @@
             if (hintBox) {
                 const isHidden = hintBox.classList.contains('hidden');
                 hintBox.classList.toggle('hidden');
-                hintBtn.innerText = isHidden ? '🙈 Hide hint' : '💡 Need a hint?';
+                hintBtn.innerHTML = isHidden 
+                    ? `<svg class="w-3 h-3 text-blue-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> Hide hint` 
+                    : `<svg class="w-3 h-3 text-blue-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> Need a hint?`;
             }
         }
 
@@ -242,59 +316,67 @@
                 modal = document.createElement('div');
                 modal.id = 'credits-modal';
                 modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in';
-                
-                const listHtml = dataset.map((d, i) => {
-                    const record = state.answers ? state.answers.find(a => a.id === d.id) : null;
-                    const userGuess = record ? record.guess : null;
-                    const wasCorrect = record ? record.correct : null;
-
-                    return `
-                    <div class="p-3 border-b border-gray-100 flex items-start gap-3 text-xs ${wasCorrect === false ? 'bg-red-50/50' : wasCorrect === true ? 'bg-green-50/30' : ''}">
-                        <span class="font-bold text-gray-400 w-5 pt-0.5">${i + 1}.</span>
-                        <div class="flex-grow">
-                            <div class="flex items-center justify-between gap-2 mb-0.5">
-                                <span class="font-bold text-gray-900">${d.title}</span>
-                                <div class="flex items-center gap-1.5 flex-shrink-0">
-                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${d.answer === 'Real' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">Correct: ${d.answer}</span>
-                                    ${record ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${wasCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">${wasCorrect ? '✅ You: ' + userGuess : '❌ You: ' + userGuess}</span>` : ''}
-                                </div>
-                            </div>
-                            <div class="text-gray-500">${d.artist} • <span class="italic text-gray-400">${d.source}</span></div>
-                        </div>
-                    </div>
-                `;
-                }).join('');
-
-                modal.innerHTML = `
-                    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] flex flex-col overflow-hidden">
-                        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <div>
-                                <h3 class="font-bold text-gray-900 text-sm uppercase tracking-wide">Artworks & Your Answers</h3>
-                                <p class="text-[11px] text-gray-500">Green = Correct guess, Red = Missed guess</p>
-                            </div>
-                            <button onclick="toggleCreditsModal()" class="text-gray-400 hover:text-gray-600 text-lg font-bold">✕</button>
-                        </div>
-                        <div class="overflow-y-auto flex-grow p-1">
-                            ${listHtml}
-                        </div>
-                        <div class="p-3 border-t border-gray-100 text-center bg-gray-50">
-                            <button onclick="toggleCreditsModal()" class="imd-blue text-white text-xs font-semibold px-5 py-2 rounded-lg hover:bg-blue-800 transition">Close</button>
-                        </div>
-                    </div>
-                `;
                 document.body.appendChild(modal);
-            } else {
-                modal.classList.toggle('hidden');
+            } else if (!modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+                return;
             }
+
+            modal.classList.remove('hidden');
+
+            // Source items: review in the exact order the player encountered them during their game session
+            const itemsToReview = (state.answers && state.answers.length > 0)
+                ? state.answers.map((a, idx) => ({ ...a.item, answerRecord: a, roundIndex: idx + 1 }))
+                : (state.gameItems && state.gameItems.length > 0 ? state.gameItems : dataset).map((d, idx) => ({ ...d, answerRecord: null, roundIndex: idx + 1 }));
+
+            const listHtml = itemsToReview.map((d) => {
+                const record = d.answerRecord || (state.answers ? state.answers.find(a => a.id === d.id) : null);
+                const userGuess = record ? record.guess : null;
+                const wasCorrect = record ? record.correct : null;
+
+                return `
+                <div class="p-3 border-b border-gray-100 flex items-start gap-3 text-xs ${wasCorrect === false ? 'bg-red-50/50' : wasCorrect === true ? 'bg-green-50/30' : ''}">
+                    <span class="font-bold text-gray-400 w-5 pt-0.5">${d.roundIndex}.</span>
+                    <div class="flex-grow">
+                        <div class="flex items-center justify-between gap-2 mb-0.5">
+                            <span class="font-bold text-gray-900">${d.title}</span>
+                            <div class="flex items-center gap-1.5 flex-shrink-0">
+                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${d.answer === 'Real' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">Correct: ${d.answer}</span>
+                                ${record ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${wasCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">${wasCorrect ? 'You: ' + userGuess : 'You: ' + userGuess}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="text-gray-500">${d.artist} • <span class="italic text-gray-400">${d.source}</span></div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] flex flex-col overflow-hidden">
+                    <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                        <div>
+                            <h3 class="font-bold text-gray-900 text-sm uppercase tracking-wide">Artworks & Your Answers</h3>
+                            <p class="text-[11px] text-gray-500">Green = Correct guess, Red = Missed guess</p>
+                        </div>
+                        <button onclick="toggleCreditsModal()" class="text-gray-400 hover:text-gray-600 text-lg font-bold">✕</button>
+                    </div>
+                    <div class="overflow-y-auto flex-grow p-1">
+                        ${listHtml}
+                    </div>
+                    <div class="p-3 border-t border-gray-100 text-center bg-gray-50">
+                        <button onclick="toggleCreditsModal()" class="imd-blue text-white text-xs font-semibold px-5 py-2 rounded-lg hover:bg-blue-800 transition">Close</button>
+                    </div>
+                </div>
+            `;
         }
 
         function renderSyncing() {
             contentDiv.innerHTML = `
             <div class="flex-grow flex flex-col justify-center items-center text-center fade-in py-12">
                 <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#003366] mb-6"></div>
-                <h2 class="text-2xl font-black imd-text-blue mb-2">Consulting the AI Jury... 🤖🔍</h2>
-                <p class="text-gray-600 text-sm max-w-xs leading-relaxed">
-                    Did you outsmart the neural networks or get fooled by diffusion magic? Transmitting your rank to the Hall of Fame...
+                <h2 class="text-2xl font-bold imd-text-blue mb-2">Verifying Results...</h2>
+                <p class="text-gray-600 text-xs max-w-xs leading-relaxed">
+                    Calculating your score and connecting to the live IMD Tech Community leaderboard...
                 </p>
             </div>
         `;
@@ -308,7 +390,7 @@
                 ? '<div class="p-4 text-center text-gray-400 text-xs italic">No scores recorded yet. Be the first!</div>'
                 : leaderboardDB.slice(0, 10).map((entry, index) => {
                     const isMe = state.nickname && entry.name && entry.name.toLowerCase() === state.nickname.toLowerCase();
-                    const rankMedal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+                    const rankMedal = index === 0 ? '1' : index === 1 ? '2' : index === 2 ? '3' : `${index + 1}.`;
                     return `
                     <div class="flex justify-between items-center p-2.5 ${isMe ? 'bg-blue-50 border border-blue-200 font-bold' : 'border-b border-gray-100'} rounded mb-1 text-xs">
                         <div class="flex items-center gap-2">
@@ -324,28 +406,28 @@
                 `;
                 }).join('');
 
+            const totalCount = state.gameItems && state.gameItems.length > 0 ? state.gameItems.length : dataset.length;
             const timeBonus = Math.max(0, Math.floor((30 - parseFloat(state.timeElapsed)) * 10));
-            const accuracyPercent = Math.round((state.correctCount / dataset.length) * 100);
+            const accuracyPercent = Math.round((state.correctCount / totalCount) * 100);
 
             contentDiv.innerHTML = `
             <div class="fade-in flex flex-col h-full">
                 <div class="text-center mb-3">
-                    <div class="text-3xl mb-0.5">🏆</div>
-                    <h2 class="text-xl font-bold imd-text-blue">Challenge Complete!</h2>
+                    <h2 class="text-xl font-bold imd-text-blue">Challenge Complete</h2>
                     <p class="text-gray-500 text-xs">Total Time: ${state.timeElapsed} seconds</p>
                 </div>
 
                 <!-- Detailed Score Breakdown Card -->
-                <div class="bg-gradient-to-br from-[#002244] to-[#003366] text-white p-4 rounded-xl text-center shadow-lg mb-3 relative overflow-hidden">
+                <div class="bg-gradient-to-br from-[#001444] via-[#001E62] to-[#002B88] text-white p-4 rounded-xl text-center shadow-lg mb-3 relative overflow-hidden">
                     <div class="text-[10px] uppercase tracking-widest text-blue-200 font-bold mb-0.5">Your Accuracy</div>
                     
                     <div class="flex items-baseline justify-center gap-1 my-0.5">
                         <span class="text-4xl font-black text-white">${state.correctCount}</span>
-                        <span class="text-lg font-medium text-blue-200">/ ${dataset.length}</span>
+                        <span class="text-lg font-medium text-blue-200">/ ${totalCount}</span>
                     </div>
                     
                     <div class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full inline-block mb-3 ${state.correctCount >= 16 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : state.correctCount >= 10 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
-                        ${accuracyPercent}% Correct • ${state.correctCount >= 18 ? 'Master Critic 🎓' : state.correctCount >= 14 ? 'Sharp Eye 👁️' : 'Apprentice 🎨'}
+                        ${accuracyPercent}% Correct • ${state.correctCount >= 18 ? 'Master Tier' : state.correctCount >= 14 ? 'Advanced Tier' : 'Apprentice Tier'}
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 pt-2.5 border-t border-blue-900/60 text-xs">
@@ -373,7 +455,7 @@
                         </button>
                         <span class="text-gray-300">•</span>
                         <button onclick="refreshLeaderboard(this)" class="text-[11px] text-blue-700 hover:text-blue-900 font-semibold flex items-center gap-1 hover:underline">
-                            🔄 Refresh
+                            Refresh
                         </button>
                     </div>
                 </div>
@@ -382,11 +464,11 @@
                 </div>
 
                 <div class="flex flex-col gap-2 mt-auto">
-                    <button onclick="resetApp()" class="w-full imd-blue text-white font-bold py-3 rounded-lg hover:bg-blue-800 transition shadow text-sm">
+                    <button onclick="resetApp()" class="btn-action-primary w-full imd-blue text-white hover:bg-[#001444] shadow">
                         PLAY AGAIN
                     </button>
                     <button onclick="toggleCreditsModal()" class="w-full bg-blue-50 text-blue-900 border border-blue-200 font-semibold py-2.5 rounded-lg hover:bg-blue-100 transition text-xs flex items-center justify-center gap-1.5">
-                        📜 Review Which Artworks You Got Right/Wrong
+                        Review Artworks & Answers
                     </button>
                 </div>
             </div>
@@ -394,7 +476,7 @@
         }
 
         async function refreshLeaderboard(btn) {
-            if (btn) btn.innerText = '⌛ Loading...';
+            if (btn) btn.innerText = 'Loading...';
             if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
                 try {
                     const res = await fetch(APPS_SCRIPT_URL);
@@ -436,7 +518,7 @@
         }
 
         async function refreshLeaderboardOnly(btn) {
-            if (btn) btn.innerText = '⌛ Loading...';
+            if (btn) btn.innerText = 'Loading...';
             if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
                 try {
                     const res = await fetch(APPS_SCRIPT_URL);
@@ -465,7 +547,7 @@
                    </div>`
                 : sorted.map((entry, index) => {
                     const isMe = state.nickname && entry.name && entry.name.toLowerCase() === state.nickname.toLowerCase();
-                    const rankMedal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+                    const rankMedal = index === 0 ? '1' : index === 1 ? '2' : index === 2 ? '3' : `${index + 1}.`;
                     const cardStyle = index === 0 
                         ? 'bg-amber-50/80 border-amber-200 text-amber-950' 
                         : index === 1 
@@ -479,7 +561,7 @@
                     return `
                     <div class="flex justify-between items-center p-3 rounded-lg border ${cardStyle} mb-2 shadow-xs transition">
                         <div class="flex items-center gap-2.5 min-w-0">
-                            <span class="font-bold text-sm w-6 text-center shrink-0 ${index < 3 ? 'text-base' : 'text-gray-500 font-mono'}">${rankMedal}</span>
+                            <span class="font-bold text-sm w-6 text-center shrink-0 ${index < 3 ? 'text-base font-extrabold text-[#003366]' : 'text-gray-500 font-mono'}">${rankMedal}</span>
                             <div class="truncate">
                                 <div class="font-bold text-gray-800 text-sm truncate ${isMe ? 'imd-text-blue' : ''}">
                                     ${entry.name || 'Anonymous'} ${isMe ? '<span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold ml-1">You</span>' : ''}
@@ -511,7 +593,7 @@
                         <p class="text-[11px] text-gray-500">${sorted.length} Participant${sorted.length === 1 ? '' : 's'}</p>
                     </div>
                     <button onclick="refreshLeaderboardOnly(this)" class="text-xs font-semibold text-blue-700 hover:text-blue-900 flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">
-                        🔄 Refresh
+                        Refresh
                     </button>
                 </div>
 
@@ -522,8 +604,8 @@
 
                 <!-- Bottom Button -->
                 <div class="mt-auto pt-2">
-                    <button onclick="resetApp()" class="w-full imd-blue text-white font-bold py-3.5 rounded-lg hover:bg-blue-800 transition shadow text-sm flex items-center justify-center gap-2">
-                        🎮 PLAY CHALLENGE
+                    <button onclick="resetApp()" class="btn-action-primary w-full imd-blue text-white hover:bg-[#001444] shadow">
+                        PLAY CHALLENGE
                     </button>
                 </div>
             </div>
@@ -543,6 +625,7 @@
             state.score = 0;
             state.correctCount = 0;
             state.answers = [];
+            state.gameItems = shuffleArray(dataset);
             state.currentIndex = 0;
             state.startTime = Date.now();
             state.screen = 'PLAYING';
@@ -564,7 +647,7 @@
         }
 
         function makeGuess(guess) {
-            const currentItem = dataset[state.currentIndex];
+            const currentItem = state.gameItems[state.currentIndex];
             const isCorrect = (guess === currentItem.answer);
 
             if (isCorrect) {
@@ -582,7 +665,7 @@
 
             state.currentIndex++;
 
-            if (state.currentIndex >= dataset.length) {
+            if (state.currentIndex >= state.gameItems.length) {
                 endGame();
             } else {
                 renderPlaying();
@@ -598,11 +681,12 @@
             const timeBonus = Math.max(0, Math.floor((30 - parseFloat(state.timeElapsed)) * 10));
             state.score += timeBonus;
 
+            const totalCount = state.gameItems ? state.gameItems.length : dataset.length;
             const payload = {
                 nickname: state.nickname,
                 score: state.score,
                 correct: state.correctCount,
-                total: dataset.length,
+                total: totalCount,
                 time: state.timeElapsed,
                 timestamp: new Date().toISOString()
             };
@@ -661,11 +745,16 @@
 
         function resetApp() {
             if (state.timerInterval) clearInterval(state.timerInterval);
+            const modal = document.getElementById('credits-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
             state = {
                 screen: 'ONBOARDING',
                 nickname: '',
                 score: 0,
                 correctCount: 0,
+                gameItems: [],
                 answers: [],
                 currentIndex: 0,
                 startTime: 0,

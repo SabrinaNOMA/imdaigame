@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMD Tech Community Challenge - Executive Design Review</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #080f21;
+            color: #f8fafc;
+            margin: 0;
+            padding: 24px;
+        }
+
+        .imd-blue {
+            background-color: #001E62;
+        }
+
+        .imd-text-blue {
+            color: #001E62;
+        }
+
+        .btn-action-primary {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.025em;
+            border-radius: 8px;
+            transition: all 0.15s ease-in-out;
+        }
+        .btn-action-primary:active {
+            transform: scale(0.985);
+        }
+
+        /* Pure white inversion for IMD official logo on dark navy header */
+        .imd-logo-white {
+            filter: brightness(0) invert(1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Design Review Header -->
+    <div class="max-w-6xl mx-auto mb-8 text-center">
+        <div class="inline-flex items-center gap-2 bg-blue-950/90 border border-blue-700/80 text-blue-300 text-xs px-4 py-1.5 rounded-full mb-3 font-semibold shadow-sm">
+            <img src="./images/imd_logo.png" alt="IMD" class="h-3.5 object-contain imd-logo-white">
+            <span class="border-l border-blue-700 pl-2">Executive Design Review</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2">
+            IMD Tech Community Challenge
+        </h1>
+        <p class="text-blue-200/80 text-sm max-w-2xl mx-auto">
+            Impact-focused design review: Official IMD logo integration, gallery framing, executive typography, unified 52px buttons, and zero emoticons.
+        </p>
+    </div>
+
+    <!-- 3 Screens Preview Grid -->
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- ================= SCREEN 1: ONBOARDING ================= -->
+        <div class="flex flex-col bg-slate-900 border border-slate-700/80 rounded-2xl p-4 shadow-2xl relative">
+            <div class="flex items-center justify-between mb-3 px-2">
+                <span class="text-xs bg-blue-700 text-white font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider">1. Onboarding</span>
+                <span class="text-[11px] text-gray-400">Institutional Entry</span>
+            </div>
+
+            <!-- Mock Frame -->
+            <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col text-slate-800 border border-slate-200 flex-grow" style="min-height: 690px;">
+                <!-- Header with official IMD Logo -->
+                <div class="imd-blue text-white p-3 font-bold text-xs tracking-wider flex justify-between items-center px-4 shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <img src="./images/imd_logo.png" alt="IMD" class="h-5 object-contain imd-logo-white">
+                        <span class="border-l border-white/20 pl-2 text-[11px] font-bold tracking-wider uppercase text-blue-100">Tech Community Challenge</span>
+                    </div>
+                    <button class="text-[10.5px] bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded font-medium transition flex items-center gap-1">
+                        Leaderboard
+                    </button>
+                </div>
+
+                <!-- Sub-header attribution ribbon -->
+                <div class="bg-[#001444] text-blue-200 text-[10.5px] py-1.5 px-3 text-center border-b border-blue-900/60 font-medium">
+                    This challenge is brought to you by <a href="https://www.imd.org/alumni/communities/tech-community/" target="_blank" class="text-amber-300 font-semibold hover:underline">IMD Tech Community, Alumni ↗</a>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6 flex flex-col flex-grow justify-center text-center">
+                    <!-- Brand Identity Watermark / Hero Crest -->
+                    <div class="w-14 h-14 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xs">
+                        <img src="./images/imd_logo.png" alt="IMD" class="h-6 object-contain">
+                    </div>
+
+                    <h2 class="text-2xl font-bold imd-text-blue mb-1 tracking-tight">Real or AI?</h2>
+                    <div class="text-[11px] uppercase tracking-widest text-gray-400 font-semibold mb-3">Executive Perception Challenge</div>
+                    
+                    <p class="text-gray-600 text-xs mb-8 max-w-xs mx-auto leading-relaxed">
+                        Can you distinguish between authentic human artistic mastery and state-of-the-art algorithmic synthesis?
+                    </p>
+
+                    <div class="bg-gray-50/80 p-4 rounded-xl border border-gray-200 mb-6 text-left shadow-2xs">
+                        <label class="block text-[11px] font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Executive Nickname</label>
+                        <div class="w-full px-3.5 py-2.5 bg-white rounded-lg border border-gray-300 text-sm text-gray-400">e.g. ExecutiveLeader</div>
+                    </div>
+
+                    <button class="btn-action-primary w-full imd-blue text-white hover:bg-[#001444] shadow-md">
+                        START THE CLOCK
+                    </button>
+                </div>
+
+                <!-- Persistent Executive Footer -->
+                <footer class="mt-auto py-3.5 px-4 bg-gray-50 border-t border-gray-200 text-center">
+                    <p class="text-[11px] text-gray-800 font-semibold italic mb-2">
+                        "We empower leaders to thrive in a tech-driven world."
+                    </p>
+                    <div class="flex items-center justify-center gap-4 text-xs">
+                        <a href="https://www.linkedin.com/showcase/imd-tech-community" target="_blank" 
+                           class="inline-flex items-center gap-1 font-semibold text-[#001E62] hover:underline">
+                            <svg class="w-3.5 h-3.5 fill-current text-[#0077B5]" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.25c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63Z"/></svg>
+                            Join us on LinkedIn
+                        </a>
+                        <span class="text-gray-300">•</span>
+                        <a href="https://www.imd.org/alumni/communities/tech-community/" target="_blank" 
+                           class="inline-flex items-center gap-1 font-semibold text-[#001E62] hover:underline">
+                            Learn more
+                            <svg class="w-3 h-3 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                        </a>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 2: PLAYING ================= -->
+        <div class="flex flex-col bg-slate-900 border border-slate-700/80 rounded-2xl p-4 shadow-2xl relative">
+            <div class="flex items-center justify-between mb-3 px-2">
+                <span class="text-xs bg-emerald-700 text-white font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider">2. Playing</span>
+                <span class="text-[11px] text-gray-400">Gallery Inspection</span>
+            </div>
+
+            <!-- Mock Frame -->
+            <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col text-slate-800 border border-slate-200 flex-grow" style="min-height: 690px;">
+                <!-- Header with official IMD Logo -->
+                <div class="imd-blue text-white p-3 font-bold text-xs tracking-wider flex justify-between items-center px-4 shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <img src="./images/imd_logo.png" alt="IMD" class="h-5 object-contain imd-logo-white">
+                        <span class="border-l border-white/20 pl-2 text-[11px] font-bold tracking-wider uppercase text-blue-100">Tech Community Challenge</span>
+                    </div>
+                    <button class="text-[10.5px] bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded font-medium transition flex items-center gap-1">
+                        Leaderboard
+                    </button>
+                </div>
+
+                <!-- Sub-header attribution ribbon -->
+                <div class="bg-[#001444] text-blue-200 text-[10.5px] py-1.5 px-3 text-center border-b border-blue-900/60 font-medium">
+                    This challenge is brought to you by <a href="https://www.imd.org/alumni/communities/tech-community/" target="_blank" class="text-amber-300 font-semibold hover:underline">IMD Tech Community, Alumni ↗</a>
+                </div>
+
+                <!-- Content -->
+                <div class="p-4 flex flex-col flex-grow">
+                    <!-- Status Header -->
+                    <div class="flex justify-between items-center text-xs mb-2">
+                        <span class="text-gray-500 font-medium">Player: <span class="imd-text-blue font-bold">ExecutiveLeader</span></span>
+                        <span class="bg-gray-100 font-mono font-bold px-2.5 py-0.5 rounded text-[11px] text-gray-700 border border-gray-200">8.4s</span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-gray-100 rounded-full h-1.5 mb-3 border border-gray-200/50 overflow-hidden">
+                        <div class="imd-blue h-1.5 rounded-full transition-all duration-300" style="width: 25%;"></div>
+                    </div>
+
+                    <!-- Gallery Matte Frame -->
+                    <div class="w-full h-44 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center mb-2 shadow-sm ring-1 ring-black/10">
+                        <img src="./images/11_real.jpg" alt="Artwork" class="w-full h-full object-cover">
+                    </div>
+
+                    <!-- Placard Bar -->
+                    <div class="flex justify-between items-center text-[10.5px] text-gray-500 mb-4 px-1">
+                        <span class="uppercase tracking-wider font-semibold text-gray-400">Artwork 04 / 20</span>
+                        <button class="text-[#001E62] font-semibold hover:underline flex items-center gap-1">
+                            <svg class="w-3 h-3 text-blue-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                            Need a hint?
+                        </button>
+                    </div>
+
+                    <!-- High-Contrast 52px Action Buttons -->
+                    <div class="flex gap-3 mt-auto mb-2">
+                        <button class="btn-action-primary flex-1 bg-white border-2 border-[#001E62] text-[#001E62] hover:bg-blue-50/50 shadow-xs">
+                            REAL
+                        </button>
+                        <button class="btn-action-primary flex-1 imd-blue text-white hover:bg-[#001444] shadow-sm">
+                            AI
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Persistent Executive Footer -->
+                <footer class="mt-auto py-3.5 px-4 bg-gray-50 border-t border-gray-200 text-center">
+                    <p class="text-[11px] text-gray-800 font-semibold italic mb-2">
+                        "We empower leaders to thrive in a tech-driven world."
+                    </p>
+                    <div class="flex items-center justify-center gap-4 text-xs">
+                        <a href="https://www.linkedin.com/showcase/imd-tech-community" target="_blank" 
+                           class="inline-flex items-center gap-1 font-semibold text-[#001E62] hover:underline">
+                            <svg class="w-3.5 h-3.5 fill-current text-[#0077B5]" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.25c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63Z"/></svg>
+                            Join us on LinkedIn
+                        </a>
+                        <span class="text-gray-300">•</span>
+                        <a href="https://www.imd.org/alumni/communities/tech-community/" target="_blank" 
+                           class="inline-flex items-center gap-1 font-semibold text-[#001E62] hover:underline">
+                            Learn more
+                            <svg class="w-3 h-3 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                        </a>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 3: RESULTS ================= -->
+        <div class="flex flex-col bg-slate-900 border border-slate-700/80 rounded-2xl p-4 shadow-2xl relative">
+            <div class="flex items-center justify-between mb-3 px-2">
+                <span class="text-xs bg-indigo-700 text-white font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider">3. Results</span>
+                <span class="text-[11px] text-gray-400">Executive Scorecard</span>
+            </div>
+
+            <!-- Mock Frame -->
+            <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col text-slate-800 border border-slate-200 flex-grow" style="min-height: 690px;">
+                <!-- Header with official IMD Logo -->
+                <div class="imd-blue text-white p-3 font-bold text-xs tracking-wider flex justify-between items-center px-4 shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <img src="./images/imd_logo.png" alt="IMD" class="h-5 object-contain imd-logo-white">
+                        <span class="border-l border-white/20 pl-2 text-[11px] font-bold tracking-wider uppercase text-blue-100">Tech Community Challenge</span>
+                    </div>
+                    <button class="text-[10.5px] bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded font-medium transition flex items-center gap-1">
+                        Leaderboard
+                    </button>
+                </div>
+
+                <!-- Sub-header attribution ribbon -->
+                <div class="bg-[#001444] text-blue-200 text-[10.5px] py-1.5 px-3 text-center border-b border-blue-900/60 font-medium">
+                    This challenge is brought to you by <a href="https://www.imd.org/alumni/communities/tech-community/" target="_blank" class="text-amber-300 font-semibold hover:underline">IMD Tech Community, Alumni ↗</a>
+                </div>
+
+                <!-- Content -->
+                <div class="p-4 flex flex-col flex-grow text-center">
+                    <h2 class="text-lg font-bold imd-text-blue mt-1">Challenge Complete</h2>
+                    <p class="text-gray-500 text-[11px] mb-2.5">Total Time: 26.4 seconds</p>
+
+                    <!-- Executive Scorecard with Radial Gradient -->
+                    <div class="bg-gradient-to-br from-[#001444] via-[#001E62] to-[#002B88] text-white p-4 rounded-xl shadow-lg mb-3 text-center relative overflow-hidden border border-blue-800/40">
+                        <div class="text-[9.5px] uppercase tracking-widest text-blue-200 font-bold mb-0.5">Accuracy Assessment</div>
+                        <div class="text-3xl font-black">18 <span class="text-sm font-normal text-blue-200">/ 20</span></div>
+                        <div class="text-[10.5px] font-semibold text-emerald-300 mt-0.5">90% Correct • Master Tier</div>
+                        
+                        <div class="mt-2.5 pt-2 border-t border-blue-800/60 text-xs flex justify-between px-2 text-blue-100">
+                            <span class="font-medium">Final Executive Score:</span>
+                            <span class="font-black text-white text-sm">1840 pts</span>
+                        </div>
+                    </div>
+
+                    <!-- Unified Buttons (Exact 52px height) -->
+                    <div class="space-y-2 mt-auto mb-2">
+                        <button class="btn-action-primary w-full imd-blue text-white hover:bg-[#001444] shadow-md">
+                            PLAY AGAIN
+                        </button>
+                        <button class="w-full bg-blue-50 text-blue-900 border border-blue-200 font-semibold py-2.5 rounded-lg text-xs hover:bg-blue-100 transition">
+                            Review Artworks & Answers
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Persistent Executive Footer -->
+                <footer class="mt-auto py-3.5 px-4 bg-gray-50 border-t border-gray-200 text-center">
+                    <p class="text-[11px] text-gray-800 font-semibold italic mb-2">
+                        "We empower leaders to thrive in a tech-driven world."
+                    </p>
+                    <div class="flex items-center justify-center gap-4 text-xs">
+                        <a href="https://www.linkedin.com/showcase/imd-tech-community" target="_blank" 
+                           class="inline-flex items-center gap-1 font-semibold text-[#001E62] hover:underline">
+                            <svg class="w-3.5 h-3.5 fill-current text-[#0077B5]" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.25c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63Z"/></svg>
+                            Join us on LinkedIn
+                        </a>
+                        <span class="text-gray-300">•</span>
+                        <a href="https://www.imd.org/alumni/communities/tech-community/" target="_blank" 
+                           class="inline-flex items-center gap-1 font-semibold text-[#001E62] hover:underline">
+                            Learn more
+                            <svg class="w-3 h-3 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                        </a>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
